@@ -12,18 +12,22 @@ const STORAGE_KEY = 'chat_app_user';
 
 export default function ChatContainer() {
   const [messages, setMessages] = useState<MessageType[]>([]);
-  const [currentUser, setCurrentUser] = useState('');
+  const [currentUser, setCurrentUser] = useState('anonymous');
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const [editUsernameValue, setEditUsernameValue] = useState('anonymous');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const lastFetchedTimestamp = useRef<string | null>(null);
+  const usernameInputRef = useRef<HTMLInputElement>(null);
 
   // Load user from localStorage on mount
   useEffect(() => {
     const savedUser = localStorage.getItem(STORAGE_KEY);
     if (savedUser) {
       setCurrentUser(savedUser);
+      setEditUsernameValue(savedUser);
     }
   }, []);
 
@@ -110,11 +114,84 @@ export default function ChatContainer() {
     localStorage.setItem(STORAGE_KEY, user);
   };
 
+  // Handle username edit
+  const handleEditUsername = () => {
+    setIsEditingUsername(true);
+    setEditUsernameValue(currentUser);
+    setTimeout(() => usernameInputRef.current?.focus(), 0);
+  };
+
+  const handleSaveUsername = () => {
+    const trimmed = editUsernameValue.trim();
+    if (trimmed && trimmed.length <= 100) {
+      handleUserChange(trimmed);
+      setIsEditingUsername(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditUsernameValue(currentUser);
+    setIsEditingUsername(false);
+  };
+
+  const handleUsernameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSaveUsername();
+    } else if (e.key === 'Escape') {
+      handleCancelEdit();
+    }
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1>Chat Application</h1>
-        <p>Send and receive messages in real-time</p>
+        <div className={styles.headerContent}>
+          <div>
+            <h1>Chat Application</h1>
+            <p>Send and receive messages in real-time</p>
+          </div>
+          <div className={styles.usernameSection}>
+            {isEditingUsername ? (
+              <div className={styles.usernameEdit}>
+                <input
+                  ref={usernameInputRef}
+                  type="text"
+                  value={editUsernameValue}
+                  onChange={(e) => setEditUsernameValue(e.target.value)}
+                  onKeyDown={handleUsernameKeyDown}
+                  className={styles.usernameInput}
+                  maxLength={100}
+                  aria-label="Edit username"
+                />
+                <button
+                  onClick={handleSaveUsername}
+                  className={styles.usernameButton}
+                  aria-label="Save username"
+                >
+                  ✓
+                </button>
+                <button
+                  onClick={handleCancelEdit}
+                  className={styles.usernameButton}
+                  aria-label="Cancel edit"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <div className={styles.usernameDisplay}>
+                <span className={styles.usernameText}>{currentUser}</span>
+                <button
+                  onClick={handleEditUsername}
+                  className={styles.editButton}
+                  aria-label="Edit username"
+                >
+                  ✏️
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </header>
 
       <div 
@@ -166,7 +243,6 @@ export default function ChatContainer() {
       <MessageInput 
         onSendMessage={handleSendMessage}
         currentUser={currentUser}
-        onUserChange={handleUserChange}
       />
     </div>
   );

@@ -39,3 +39,12 @@ export function isNearBottom(
   const { scrollHeight, scrollTop, clientHeight } = element;
   return scrollHeight - scrollTop - clientHeight < threshold;
 }
+
+/**
+ * Decode HTML entities in text
+ */
+export function decodeHTML(text: string): string {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
+}

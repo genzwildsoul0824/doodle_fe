@@ -2,6 +2,7 @@
 
 import { format } from 'date-fns';
 import type { Message as MessageType } from '@/types';
+import { decodeHTML } from '@/lib/utils';
 import styles from './Message.module.css';
 
 interface MessageProps {
@@ -27,7 +28,7 @@ export default function Message({ message, currentUser }: MessageProps) {
         {message.author}
       </div>
       <div className={`${styles.bubble} ${isOwn ? styles.bubbleOwn : styles.bubbleOther}`}>
-        <p className={styles.messageText}>{message.message}</p>
+        <p className={styles.messageText}>{decodeHTML(message.message)}</p>
       </div>
       <div className={`${styles.timestamp} ${isOwn ? styles.timestampOwn : styles.timestampOther}`}>
         {formatTimestamp(message.createdAt)}

@@ -6,7 +6,6 @@ import styles from './MessageInput.module.css';
 interface MessageInputProps {
   onSendMessage: (message: string, author: string) => Promise<void>;
   currentUser: string;
-  onUserChange: (user: string) => void;
 }
 
 const MAX_MESSAGE_LENGTH = 1000;
@@ -14,19 +13,17 @@ const MAX_AUTHOR_LENGTH = 100;
 
 export default function MessageInput({ 
   onSendMessage, 
-  currentUser, 
-  onUserChange 
+  currentUser
 }: MessageInputProps) {
   const [message, setMessage] = useState('');
-  const [author, setAuthor] = useState(currentUser);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    if (!message.trim() || !author.trim()) {
-      setError('Please enter both message and author name');
+    if (!message.trim()) {
+      setError('Please enter a message');
       return;
     }
 
@@ -35,8 +32,8 @@ export default function MessageInput({
       return;
     }
 
-    if (author.length > MAX_AUTHOR_LENGTH) {
-      setError(`Author name is too long (max ${MAX_AUTHOR_LENGTH} characters)`);
+    if (!currentUser.trim()) {
+      setError('Please set your username first');
       return;
     }
 
@@ -44,9 +41,8 @@ export default function MessageInput({
     setIsSending(true);
 
     try {
-      await onSendMessage(message.trim(), author.trim());
+      await onSendMessage(message.trim(), currentUser.trim());
       setMessage('');
-      onUserChange(author.trim());
     } catch (err: unknown) {
       const errorMessage = err && typeof err === 'object' && 'message' in err 
         ? String(err.message) 
@@ -59,11 +55,6 @@ export default function MessageInput({
 
   const handleMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
-    setError('');
-  };
-
-  const handleAuthorChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setAuthor(e.target.value);
     setError('');
   };
 
@@ -82,25 +73,7 @@ export default function MessageInput({
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.inputWrapper}>
-          <label htmlFor="author-input" className={styles.label}>
-            Your Name
-          </label>
-          <input
-            id="author-input"
-            type="text"
-            value={author}
-            onChange={handleAuthorChange}
-            className={styles.input}
-            placeholder="Enter your name"
-            maxLength={MAX_AUTHOR_LENGTH}
-            disabled={isSending}
-            aria-label="Author name"
-            aria-required="true"
-          />
-        </div>
-        
-        <div className={styles.inputWrapper} style={{ flex: 2 }}>
+        <div className={styles.inputWrapper} style={{ flex: 1 }}>
           <label htmlFor="message-input" className={styles.label}>
             Message
           </label>
@@ -133,7 +106,7 @@ export default function MessageInput({
         <button 
           type="submit" 
           className={styles.button}
-          disabled={isSending || !message.trim() || !author.trim() || isMessageTooLong}
+          disabled={isSending || !message.trim() || isMessageTooLong}
           aria-label="Send message"
         >
           {isSending ? 'Sending...' : 'Send'}
