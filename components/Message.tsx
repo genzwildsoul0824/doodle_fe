@@ -24,14 +24,14 @@ export default function Message({ message, currentUser }: MessageProps) {
 
   return (
     <div className={`${styles.message} ${isOwn ? styles.messageOwn : styles.messageOther}`}>
-      <div className={`${styles.author} ${isOwn ? styles.authorOwn : ''}`}>
-        {message.author}
-      </div>
       <div className={`${styles.bubble} ${isOwn ? styles.bubbleOwn : styles.bubbleOther}`}>
+        <div className={`${styles.author} ${isOwn ? styles.authorOwn : ''}`}>
+          {message.author}
+        </div>
         <p className={styles.messageText}>{decodeHTML(message.message)}</p>
-      </div>
-      <div className={`${styles.timestamp} ${isOwn ? styles.timestampOwn : styles.timestampOther}`}>
-        {formatTimestamp(message.createdAt)}
+        <div className={`${styles.timestamp} ${isOwn ? styles.timestampOwn : styles.timestampOther}`}>
+          {formatTimestamp(message.createdAt)}
+        </div>
       </div>
     </div>
   );

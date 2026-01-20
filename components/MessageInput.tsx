@@ -74,16 +74,14 @@ export default function MessageInput({
     <div className={styles.container}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.inputWrapper} style={{ flex: 1 }}>
-          <label htmlFor="message-input" className={styles.label}>
-            Message
-          </label>
           <textarea
             id="message-input"
             value={message}
             onChange={handleMessageChange}
             onKeyDown={handleKeyDown}
             className={styles.textarea}
-            placeholder="Type your message... (Press Enter to send, Shift+Enter for new line)"
+            placeholder="Message"
+            rows={1}
             disabled={isSending}
             aria-label="Message text"
             aria-required="true"

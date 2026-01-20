@@ -1,5 +1,5 @@
 .message {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   animation: fadeIn 0.3s ease-in;
 }
 
@@ -27,33 +27,32 @@
 }
 
 .author {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
-  color: #495057;
+  color: #6c7a89;
 }
 
 .authorOwn {
-  color: #667eea;
+  color: #00a0e3;
 }
 
 .bubble {
-  max-width: 70%;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
+  max-width: 420px;
+  padding: 1rem;
+  border-radius: 16px;
   word-wrap: break-word;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
 }
 
 .bubbleOwn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #fff9c4;
   border-bottom-right-radius: 4px;
 }
 
 .bubbleOther {
-  background: white;
-  color: #212529;
+  background: #ffffff;
   border-bottom-left-radius: 4px;
 }
 
@@ -70,20 +69,21 @@
 }
 
 .timestampOwn {
-  color: #667eea;
+  color: #6c7a89;
+  text-align: right;
 }
 
 .timestampOther {
-  color: #6c757d;
+  color: #6c7a89;
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
   .bubble {
-    max-width: 85%;
+    max-width: 240px;
   }
 
-  .messageText {
-    font-size: 0.9375rem;
+  .author, .messageText, .timestamp {
+    font-size: 0.7rem;
   }
 }
